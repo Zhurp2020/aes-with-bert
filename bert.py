@@ -31,7 +31,7 @@ class GetBERTEmbeddings():
     def inf(self,stop=1000,SeqLen = 1024):
         self.tokenize(SeqLen=SeqLen)
         print('tokenized')
-        self.model = self.model.to('cuda') # move to gpu
+        self.model = self.model.to('cuda') # move model to gpu
         for run in range(len(self.input) // stop):
             for i in range(stop):
                 with torch.no_grad():
