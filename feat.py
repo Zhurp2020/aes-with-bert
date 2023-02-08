@@ -8,18 +8,12 @@ class FeatureExtraction():
         self.doc = self.extractor.NLP_doc
     def GetPos(self):
         d = self.extractor.POSF_()
-        AuXCount = 0
-        for sent in self.doc.sents:
-            for t in sent:
-                if t.pos_ =='AUX':
-                    AuXCount += 1
         feats = [
             d['at_NoTag_C'], #average count of Noun POS tags per token
             d['at_VeTag_C'], #average count of Verb POS tags per token
             d['at_AjTag_C'], #average count of Adjective POS tags per token
             d['at_AvTag_C'], #average count of Adverb POS tags per token
             d['ra_CoFuW_C'],  #ratio of Content words to Function words
-            AuXCount/self.count['n_token']#average count of aux tag tags per token
         ]
         return feats
     def GetVar(self):
@@ -42,18 +36,29 @@ class FeatureExtraction():
         d = self.extractor.PhrF_()
         feats = [
             d['as_NoPhr_C'], #average count of Noun phrases per sentence
-            d['	as_VePhr_C'],# average count of Verb phrases per sentence
+            d['as_VePhr_C'],# average count of Verb phrases per sentence
             d['as_PrPhr_C'], #average count of prepositional phrases per sentence
             d['as_AjPhr_C'], #average count of Adjective phrases per sentence
             d['as_AvPhr_C']# 	average count of Adverb phrases per sentence
         ]
         return feats
-    def GetMorph(self):
+    def GetTenDep(self):
         d = {
         'Pres':0,
         'Prog':0,
         'Past':0,
-        'Perf':0
+        'Perf':0,
+        'advcl':0,
+        'acl':0,
+        'agent':0,
+        'aux':0,
+        'auxpass':0,
+        'ccomp':0,
+        'pcomp':0,
+        'cc':0,
+        'xcomp':0,
+        'csubj':0,
+        'csubjpass':0
             }
         for sent in self.doc.sents:
             for t in sent:
@@ -63,14 +68,12 @@ class FeatureExtraction():
                         d[m['Tense']] += 1
                     if 'Aspect' in m:
                         d[m['Aspect']] += 1
+                if t.dep_ in d:
+                    d[t.dep_] += 1
         n = self.count['n_sent']
-        f = [
-            d['Pres']/n, # average present tense per sent
-            d['Prog']/n, # average prog tense per sent
-            d['Past']/n, # average past tense per sent
-            d['Perf']/n # average perf tense per sent
-        ]
+        f = [d[i]/n for i in d.keys()]
         return f
+        '''
     def GetDep(self):
         d = {
         'advcl':0,
@@ -91,6 +94,6 @@ class FeatureExtraction():
                     d[t.dep_] += 1
         n = self.count['n_sent']
         f = [d[i]/n for i in d.keys()]
-        return f
+        return f'''
     def GetFine(self):
-        return self.GetPos() + self.GetPhr() + self.GetVar() + self.GetMorph() + self.GetTree() + self.GetDep()
+        return self.GetPos() + self.GetPhr() + self.GetVar() + self.GetTenDep() + self.GetTree()
