@@ -52,8 +52,8 @@ class GetBERTEmbeddings():
             del out 
         torch.cuda.empty_cache()
     def CLSEmbedding(self,i):
-        self.CLS = self.hidden[i][:,0]
-        return self.CLS
+        self.CLS = self.hidden[i][:,0].detach().clone().cpu()
+        return self.CLS.clone()
     def MaxPooling(self,i):
         hidden = self.hidden[i]
         self.AttentionMask = self.tokenized[i]['attention_mask'].unsqueeze(-1).expand(hidden.size())
