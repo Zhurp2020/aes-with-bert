@@ -962,7 +962,7 @@ class GetBERTEmbeddings():
             for i in range(stop):
                 with torch.no_grad():
                     out = self.model(self.input[run*stop+i]['input_ids'],self.input[run*stop+i]['attention_mask']) # inference
-                self.hidden.append(out.last_hidden_state.detach().cpu()) # detach to cpu
+                self.hidden.append(out.last_hidden_state) # detach to cpu
                 if i % 10 == 0:
                     print('{}/{}, run:{}'.format(i,stop,run))
                 del out 
@@ -972,7 +972,7 @@ class GetBERTEmbeddings():
         for i in range(t,len(self.input)):
             with torch.no_grad():
                 out = self.model(self.input[i]['input_ids'],self.input[i]['attention_mask']) # inference
-            self.hidden.append(out.last_hidden_state.detach().cpu()) # detach to cpu
+            self.hidden.append(out.last_hidden_state) # detach to cpu
             if i % 10 == 0:
                 print('{}/{}, run:{}'.format(i,stop,'f'))
             del out 
@@ -981,7 +981,7 @@ class GetBERTEmbeddings():
         self.CLS = self.hidden[i][:,0].detach().clone().cpu()
         return self.CLS.clone()
     def MaxPooling(self,i):
-        hidden = self.hidden[i]
+        hidden = self.hidden[i].detach().clone().cpu()
         self.AttentionMask = self.tokenized[i]['attention_mask'].unsqueeze(-1).expand(hidden.size())
         hidden[self.AttentionMask == 0] = -1e9 # ignore paddings
         self.MaxP = torch.max(hidden,1)[0]
