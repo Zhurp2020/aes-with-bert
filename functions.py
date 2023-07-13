@@ -962,11 +962,11 @@ class GetBERTEmbeddings():
             for i in range(stop):
                 with torch.no_grad():
                     out = self.model(self.input[run*stop+i]['input_ids'],self.input[run*stop+i]['attention_mask']) # inference
-                self.hidden.append(out.last_hidden_state) # detach to cpu
+                self.hidden.append(out.last_hidden_state.detach().cpu()) # detach to cpu
                 if i % 10 == 0:
                     print('{}/{}, run:{}'.format(i,stop,run))
                 del out 
-            torch.cuda.empty_cache() # clear cuda memory for next run
+                torch.cuda.empty_cache() # clear cuda memory for next run
         # remaining ones
         t = len(self.input) // stop * stop
         for i in range(t,len(self.input)):
