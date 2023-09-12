@@ -9,7 +9,8 @@ import re
 ### sklearn for regression, clustering, LSA, evaluation
 from sklearn.utils import shuffle
 from sklearn import linear_model 
-from sklearn.metrics import cohen_kappa_score,mean_absolute_error,mean_squared_error,accuracy_score,explained_variance_score,r2_score,confusion_matrix,ConfusionMatrixDisplay,classification_report,f1_score, silhouette_score,adjusted_mutual_info_score
+from sklearn.metrics import cohen_kappa_score,mean_absolute_error,mean_squared_error,accuracy_score,explained_variance_score,r2_score,confusion_matrix,ConfusionMatrixDisplay,classification_report,f1_score, silhouette_score,adjusted_mutual_info_score, balanced_accuracy_score
+from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.manifold import TSNE,MDS
 from sklearn.decomposition import PCA,TruncatedSVD
